@@ -1,6 +1,6 @@
 # 📝 rankmath-seo-blog-generator
 
-**Version:** 2.0
+**Version:** 2.1
 **Author:** [PixelKraft LLC](https://pixelkraft.net)
 **Category:** SEO / Content
 **Tested on:** Claude Sonnet 4, Claude Opus 4
@@ -30,8 +30,9 @@ ready to paste into WordPress with no manual SEO fixes needed.
 
 ---
 
-## What's New in v2.0
+## What's New in v2.1
 
+v2.1 adds native Gutenberg block publishing and categories by name via PixelKraft SEO Pro MCP.
 v1.0 produced posts scoring ~40–55 in RankMath Pro. v2.0 was retrained against
 a live RankMath Pro inspection and fixes **9 scoring failures**:
 
@@ -83,12 +84,17 @@ Tell Claude:
 ### Step 4 — Receive and Publish
 
 Claude outputs a complete HTML file with:
-- SEO metadata comment block (for RankMath fields)
+- SEO metadata comment block (keyword, title, meta desc, slug, categories)
 - `<article>` wrapper
 - All images embedded with live URLs
 - Internal and external links
 - CTA with real phone number
 
+**Option A — PixelKraft SEO Pro MCP (recommended):**
+Use `pk_publish_post` with the values from the comment block. HTML is automatically
+converted to native Gutenberg blocks. Categories can be passed as names (strings).
+
+**Option B — Manual:**
 Paste the HTML body into WordPress → fill RankMath fields from the comment block → publish.
 
 ---
@@ -121,6 +127,14 @@ Add secondary keywords as additional focus keyword pills in RankMath Pro.
 
 ## Pre-Publish Checklist
 
+### Via PixelKraft SEO Pro MCP (pk_publish_post)
+- [ ] Pass `title`, `content`, `keyword`, `meta_title`, `meta_desc`, `slug` from the comment block
+- [ ] Pass `categories` as string names — created automatically if new
+- [ ] Set Featured Image manually in WP Admin after publishing
+- [ ] Check RankMath score → target 90–100
+- [ ] Publish via `status: "publish"` or promote from draft ✅
+
+### Manual (paste into WordPress)
 - [ ] Paste HTML into WordPress block editor (HTML/Code view)
 - [ ] Copy SEO Title → RankMath Edit Snippet → Title
 - [ ] Copy Meta Description → RankMath Edit Snippet → Description
@@ -136,6 +150,13 @@ Add secondary keywords as additional focus keyword pills in RankMath Pro.
 ---
 
 ## Changelog
+
+### v2.1 — 2026-03-23
+- Added Step 13: Publishing via PixelKraft SEO Pro MCP (`pk_publish_post`)
+- HTML is now auto-converted to native Gutenberg blocks on publish (no Classic block)
+- `categories` parameter accepts string names; new categories created automatically
+- Updated pre-publish checklist with MCP and manual paths
+- Updated README: "What's New", Step 4, checklist
 
 ### v2.0 — 2025
 - Full rewrite against live RankMath Pro inspection results

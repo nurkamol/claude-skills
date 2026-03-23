@@ -20,7 +20,7 @@ Think of it as a reusable system prompt you can share, version, and improve.
 
 | Skill | Category | Description | Version |
 |---|---|---|---|
-| [rankmath-seo-blog-generator](./rankmath-seo-blog-generator/) | SEO / Content | Generates RankMath Pro-optimized HTML blog posts targeting 90–100 scores | 2.0 |
+| [rankmath-seo-blog-generator](./rankmath-seo-blog-generator/) | SEO / Content | Generates RankMath Pro-optimized HTML blog posts targeting 90–100 scores | 2.1 |
 
 > More skills are added regularly. ⭐ Star this repo to get notified.
 
