@@ -1,19 +1,15 @@
 ---
 name: universal-seo-blog-generator
 description: Generate premium, SEO-optimized HTML blog posts for any business or industry with internal linking, images, and conversion-focused structure.
-version: 2.1
-author: Nurkamol Vakhidov
-updated-by: Claude (PixelKraft LLC) — retrained against live RankMath Pro inspection
-changelog: >
-  v2.1 — pk_publish_post now converts HTML to native Gutenberg blocks automatically
-  (no Classic block); categories parameter accepts strings (names) or integers (IDs),
-  new categories created automatically. Added Step 13: Publishing via MCP.
-
-  v2.0 — Fixed 9 RankMath Pro scoring failures from v1.0:
-  keyword placement rules, exact-phrase requirements, density targets,
-  dofollow link requirement, image alt keyword rule, slug length,
-  title position rule, paragraph limits, ToC, and metadata block.
 ---
+<!-- v2.3 | Author: Nurkamol Vakhidov | Updated by: Claude (PixelKraft LLC)
+  v2.3 — Added Step 2 format question (HTML vs Gutenberg); added Gutenberg Block Map
+         to Step 8; added SEO Summary Block output in chat after every generation
+         (Focus Keyword, Secondary Keywords, SEO Title, Meta Description, Slug, Categories).
+  v2.2 — Added Image Reference Block in metadata comment (URLs + alt texts listed for easy manual replacement).
+  v2.1 — pk_publish_post converts HTML to native Gutenberg blocks; categories accept strings; Step 13 added.
+  v2.0 — Fixed 9 RankMath Pro scoring failures from v1.0.
+-->
 
 # 🧠 Universal SEO Blog Generator — RankMath Pro Edition
 
@@ -53,6 +49,11 @@ Before writing, confirm:
    - SEO traffic
    - Lead generation
    - Brand authority
+5. **Output format** — ask the user which format they need:
+   - **HTML** *(default)* — clean `<article>` markup, ready for Classic editor, MCP publishing, or manual paste
+   - **Gutenberg** — native WordPress block markup using `<!-- wp:paragraph -->` etc., paste directly into the Gutenberg editor block inserter or Code Editor view
+
+   > If the user plans to publish via `pk_publish_post` MCP, HTML is recommended — the plugin converts automatically. Only choose Gutenberg if the user will paste manually into the WordPress block editor.
 
 ---
 
@@ -190,7 +191,14 @@ RankMath tests **four things** on the title — all must pass:
 
 ---
 
-## 🧾 Step 8: Output Format (HTML)
+## 🧾 Step 8: Output Format
+
+### Format Choice (set in Step 2, question 5)
+
+**If HTML** → use the `<article>` structure below (default).  
+**If Gutenberg** → replace every HTML tag with its native block equivalent (see Gutenberg Block Map below).
+
+---
 
 ### Metadata Comment Block (top of file):
 ```html
@@ -202,6 +210,21 @@ RankMath tests **four things** on the title — all must pass:
   Slug:                [focus-keyword-hyphenated — ≤75 chars total URL]
   Categories:          [Primary Category], [Location Category], General
   (category names are passed as strings to pk_publish_post — created automatically if new)
+
+  ── IMAGE REFERENCE ─────────────────────────────────────────────────────────
+  IMG 1 (hero):   [full URL]
+                  Alt: "[exact focus keyword] — descriptive context"
+  IMG 2:          [full URL]
+                  Alt: "[semantic alt text]"
+  IMG 3:          [full URL]
+                  Alt: "[semantic alt text]"
+  IMG 4:          [full URL]
+                  Alt: "[semantic alt text]"
+  [IMG 5+]:       [full URL]  ← add rows if more than 4 images used
+                  Alt: "[semantic alt text]"
+  ─────────────────────────────────────────────────────────────────────────────
+  ⚠️  If any image above returns a 404 or looks off, replace its src= and alt=
+      in the HTML below before publishing.
 -->
 ```
 
@@ -256,6 +279,81 @@ RankMath tests **four things** on the title — all must pass:
 
 </article>
 ```
+
+### Gutenberg Block Map (use when format = Gutenberg)
+
+Wrap each element in its native block comment. Example:
+
+```html
+<!-- wp:heading {"level":1} -->
+<h1 class="wp-block-heading">[Title]</h1>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>[Opening paragraph]</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image -->
+<figure class="wp-block-image">
+  <img src="LIVE_URL" alt="[exact focus keyword] — descriptive context"/>
+</figure>
+<!-- /wp:image -->
+
+<!-- wp:html -->
+<nav aria-label="Table of Contents">...</nav>
+<!-- /wp:html -->
+
+<!-- wp:heading {"level":2} -->
+<h2 class="wp-block-heading" id="section-1">[Section heading]</h2>
+<!-- /wp:heading -->
+
+<!-- wp:list -->
+<ul class="wp-block-list"><li>[item]</li></ul>
+<!-- /wp:list -->
+
+<!-- wp:separator -->
+<hr class="wp-block-separator"/>
+<!-- /wp:separator -->
+```
+
+Full tag → block mapping:
+
+| HTML | Gutenberg block |
+|---|---|
+| `<h1>` | `wp:heading {"level":1}` |
+| `<h2>` | `wp:heading {"level":2}` |
+| `<h3>`–`<h6>` | `wp:heading {"level":N}` |
+| `<p>` | `wp:paragraph` |
+| `<ul>` | `wp:list` |
+| `<ol>` | `wp:list {"ordered":true}` |
+| `<img>` (standalone) | `wp:image` wrapped in `<figure>` |
+| `<blockquote>` | `wp:quote` |
+| `<pre>` | `wp:code` |
+| `<hr>` | `wp:separator` |
+| `<nav>`, `<div>` | `wp:html` |
+
+> ⚠️ Do NOT use Gutenberg format when publishing via `pk_publish_post` — the MCP plugin handles HTML-to-blocks conversion automatically.
+
+---
+
+### 📋 SEO Summary Block (ALWAYS output this in chat after generating content)
+
+After delivering the HTML or Gutenberg content, **always output the following block as plain text in the chat** — so the user can copy SEO fields directly into RankMath without opening the file:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 SEO SUMMARY — paste into RankMath
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Focus Keyword:      [exact phrase]
+Secondary Keywords: [kw1], [kw2], [kw3], [kw4]
+SEO Title:          [title ≤60 chars — keyword in first 50%]
+Meta Description:   [120–160 chars — exact keyword in first 120 chars]
+Slug:               [focus-keyword-hyphenated]
+Categories:         [Primary Category], [Location Category], General
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+This block is always shown — regardless of HTML or Gutenberg format, regardless of whether publishing via MCP or manually.
 
 ---
 
@@ -356,6 +454,7 @@ Before outputting the final HTML, verify every item:
 - [ ] At least 4 images with live URLs
 - [ ] `loading="eager"` on hero image, `loading="lazy"` on all others
 - [ ] `<article>` wrapper present
+- [ ] Image Reference Block in metadata comment is complete and matches all `<img>` tags in the HTML
 
 ### CTA
 - [ ] Real phone number in `<a href="tel:...">` at end of post
@@ -433,5 +532,8 @@ LINKS:        2–3 internal (natural anchors) + 1 external dofollow (no rel att
 PARAGRAPHS:   ≤120 words each
 TOC:          Required — <nav> with anchor links
 IMAGES:       4 minimum, live URLs, loading="eager" on hero only
+IMG REF:      List ALL images (URL + alt) in metadata comment block for easy manual replacement
+FORMAT:       Ask user — HTML (default) or Gutenberg block markup
+SEO SUMMARY:  Always output keyword / secondary keywords / title / meta / slug / categories in chat after generating
 CTA:          Real tel: link, specific to post topic + location
 ```
