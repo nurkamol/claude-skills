@@ -1,10 +1,14 @@
 ---
 name: universal-seo-blog-generator
 description: Generate premium, SEO-optimized HTML blog posts for any business or industry with internal linking, images, and conversion-focused structure.
-version: 2.0
+version: 2.1
 author: Nurkamol Vakhidov
 updated-by: Claude (PixelKraft LLC) — retrained against live RankMath Pro inspection
 changelog: >
+  v2.1 — pk_publish_post now converts HTML to native Gutenberg blocks automatically
+  (no Classic block); categories parameter accepts strings (names) or integers (IDs),
+  new categories created automatically. Added Step 13: Publishing via MCP.
+
   v2.0 — Fixed 9 RankMath Pro scoring failures from v1.0:
   keyword placement rules, exact-phrase requirements, density targets,
   dofollow link requirement, image alt keyword rule, slug length,
@@ -197,6 +201,7 @@ RankMath tests **four things** on the title — all must pass:
   Meta Description:    [exact phrase in first 120 chars, 120–160 chars total]
   Slug:                [focus-keyword-hyphenated — ≤75 chars total URL]
   Categories:          [Primary Category], [Location Category], General
+  (category names are passed as strings to pk_publish_post — created automatically if new)
 -->
 ```
 
@@ -367,6 +372,50 @@ Before outputting the final HTML, verify every item:
 | Title Readability | ✅ All green | Keyword at start, power word, sentiment, number, ≤60 chars |
 | Content Readability | ✅ All green | ToC, short paragraphs, 4+ images |
 | **Overall Score** | **90–100 / 100** | All sections passing |
+
+---
+
+## 🚀 Step 13: Publishing via PixelKraft SEO Pro MCP
+
+When publishing with `pk_publish_post`, note:
+
+### Native Gutenberg Blocks (automatic)
+The plugin **automatically converts the HTML output to native Gutenberg blocks** before saving.
+You do NOT need to change the HTML structure — keep the `<article>` wrapper and `<h1>` in place.
+The server strips them and maps each element:
+
+| HTML tag | Gutenberg block |
+|---|---|
+| `<h2>`, `<h3>`–`<h6>` | `wp:heading` |
+| `<p>` | `wp:paragraph` |
+| `<ul>` | `wp:list` |
+| `<ol>` | `wp:list` (ordered) |
+| `<figure><img>` | `wp:image` |
+| `<blockquote>` | `wp:quote` |
+| `<pre>` | `wp:code` |
+| `<hr>` | `wp:separator` |
+| `<nav>`, `<div>`, etc. | `wp:html` |
+
+### Categories by Name
+Pass category names as strings — no need to look up IDs first:
+```
+categories: ["HERS Compliance", "Roseville", "Title 24"]
+```
+New categories are created automatically if they don't exist.
+
+### Full pk_publish_post Call
+```
+pk_publish_post(
+  title:      "[SEO Title from metadata block]",
+  content:    "[full HTML article output]",
+  keyword:    "[focus keyword]",
+  meta_title: "[SEO Title ≤60 chars]",
+  meta_desc:  "[meta description 120–160 chars]",
+  slug:       "[slug from metadata block]",
+  categories: ["[Primary Category]", "[Location Category]"],
+  status:     "publish"   ← or "draft" for review
+)
+```
 
 ---
 
